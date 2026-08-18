@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Adaptive-icon foreground: a speaker cone with two sound waves, drawn in the
+  ghac "default" theme accent (ANSI cyan). The 108x108 viewport keeps all
+  artwork inside the centred 72dp safe zone so no part is clipped by masking.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Speaker body and cone -->
+    <path
+        android:fillColor="#00CDCD"
+        android:pathData="M36,47 h7 l13,-12 v38 l-13,-12 h-7 z" />
+
+    <!-- Inner sound wave -->
+    <path
+        android:strokeColor="#00CDCD"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:pathData="M63,45 a13,13 0 0 1 0,18" />
+
+    <!-- Outer sound wave -->
+    <path
+        android:strokeColor="#00CDCD"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:pathData="M70,38 a22,22 0 0 1 0,32" />
+
+</vector>
