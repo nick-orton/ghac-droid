@@ -4,6 +4,15 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <!--
+      ghac only ever talks to servers on the user's own LAN. From Android 17
+      (API 37) that is gated behind a runtime permission for apps targeting 37
+      or higher; without it, TCP connections to local addresses silently time
+      out rather than being refused. Older releases grant local access
+      implicitly via INTERNET, so this is a no-op there.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_LOCAL_NETWORK" />
+
     <application
         android:name=".GhacApplication"
         android:allowBackup="true"

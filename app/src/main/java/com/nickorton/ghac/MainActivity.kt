@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import com.nickorton.ghac.ui.GhacApp
 import com.nickorton.ghac.ui.theme.GhacTheme
 
@@ -11,11 +12,24 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var container: GhacContainer
 
+    /**
+     * The repositories retry on a fixed backoff, so a grant is picked up by the
+     * next attempt without anything needing to be re-triggered here.
+     */
+    private val localNetworkRequest =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         container = (application as GhacApplication).container
+
+        // Ask before the first connection attempt: without this, on Android 17
+        // and later every connection to a LAN address hangs until it times out.
+        if (LocalNetworkPermission.isRequired(this)) {
+            localNetworkRequest.launch(LocalNetworkPermission.NAME)
+        }
 
         setContent {
             GhacTheme {
