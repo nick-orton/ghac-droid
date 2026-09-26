@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.nickorton.ghac.data.mpd.MpdConnection
 import com.nickorton.ghac.data.snapcast.SnapcastClient
+import com.nickorton.ghac.ui.theme.GhacThemeChoice
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -63,10 +64,23 @@ class SettingsStore(private val context: Context) {
         }
     }
 
+    /**
+     * Kept apart from [settings] on purpose: the container redials both
+     * servers whenever [settings] changes, and picking a theme must not.
+     */
+    val theme: Flow<GhacThemeChoice> = context.settingsDataStore.data.map { prefs ->
+        GhacThemeChoice.fromName(prefs[THEME])
+    }
+
+    suspend fun saveTheme(choice: GhacThemeChoice) {
+        context.settingsDataStore.edit { prefs -> prefs[THEME] = choice.name }
+    }
+
     private companion object {
         val MPD_HOST = stringPreferencesKey("mpd_host")
         val MPD_PORT = intPreferencesKey("mpd_port")
         val SNAP_HOST = stringPreferencesKey("snap_host")
         val SNAP_PORT = intPreferencesKey("snap_port")
+        val THEME = stringPreferencesKey("theme")
     }
 }

@@ -4,10 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nickorton.ghac.data.settings.ServerSettings
 import com.nickorton.ghac.data.settings.SettingsStore
+import com.nickorton.ghac.ui.theme.GhacThemeChoice
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -32,6 +35,18 @@ class SettingsViewModel(private val store: SettingsStore) : ViewModel() {
 
     private val _form = MutableStateFlow(FormState())
     val form: StateFlow<FormState> = _form.asStateFlow()
+
+    val theme: StateFlow<GhacThemeChoice> = store.theme
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), GhacThemeChoice.Default)
+
+    /**
+     * Applied immediately rather than on "Save and connect": a theme is safe
+     * to try on, and making someone press a button labelled "connect" to see
+     * a colour change would be confusing.
+     */
+    fun onThemeSelected(choice: GhacThemeChoice) {
+        viewModelScope.launch { store.saveTheme(choice) }
+    }
 
     init {
         viewModelScope.launch {
