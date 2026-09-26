@@ -28,6 +28,9 @@ The build needs a JDK 17+ and an Android SDK with `compileSdk 37`. Point
 sdk.dir=/path/to/android-sdk
 ```
 
+To put the app on a phone — release signing, installing over USB or Wi-Fi with
+`adb`, or copying the APK across — see **[INSTALLING.md](INSTALLING.md)**.
+
 ## Configuration
 
 The TUI reads `~/.config/.ghacrc`. There is no equivalent place for a dotfile on
@@ -47,9 +50,9 @@ redials both backends whenever they change.
 ## Screens
 
 **Volume** — one row per SnapCast client, with a slider and a mute toggle.
-Offline clients stay listed but are greyed out and disabled. Unmuted rows are
-green, muted rows red, matching the TUI's `volume_unmuted` / `volume_muted`
-theme roles.
+Offline clients stay listed but are greyed out and disabled. Unmuted rows take
+the theme's accent colour and muted rows a contrasting warm tone, filling the
+TUI's `volume_unmuted` / `volume_muted` theme roles.
 
 **Queue** — the MPD play queue. Tap to play, long-press to start a selection,
 and use the contextual bar to remove or reorder. The list follows the playing
@@ -59,7 +62,8 @@ song.
 back gesture to go up, tap `+` to enqueue. Files already in the queue are
 ticked. Long-press to multi-select for a bulk enqueue.
 
-**Settings** — server addresses and live connection status.
+**Settings** — server addresses, live connection status, and the colour theme
+(Turquoise, Nord, Gruvbox, Dracula, Solarized, Catppuccin, Monochrome).
 
 ## How this differs from the TUI
 
@@ -77,14 +81,14 @@ differences are worth calling out:
   parked MPD `idle` connection would only get dropped by the router or the
   platform.
 - **The app is always dark.** All eight themes in the original `themes.toml`
-  assume a dark terminal; there is no light-mode palette to derive. The default
-  theme is ported as the app's colour scheme.
+  assume a dark terminal; there is no light-mode palette to derive. The app's
+  themes are all dark to match: Turquoise is the TUI's default, and the rest
+  follow the palettes of the editor themes they are named after.
 
 ## Not yet ported
 
-Renaming SnapCast clients (the repository plumbing exists, the UI does not), the
-theme picker and the other seven themes, MPD library update, and the bulk-edit
-confirmation prompts.
+Renaming SnapCast clients (the repository plumbing exists, the UI does not), MPD
+library update, and the bulk-edit confirmation prompts.
 
 ## Architecture
 
