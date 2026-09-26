@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nickorton.ghac.ui.GhacApp
 import com.nickorton.ghac.ui.theme.GhacTheme
 
@@ -32,8 +34,14 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            GhacTheme {
-                GhacApp(container)
+            // Null until DataStore answers, so someone who picked a theme does
+            // not see a frame of the default first. The read takes a few ms.
+            val theme by container.settingsStore.theme
+                .collectAsStateWithLifecycle(initialValue = null)
+            theme?.let { choice ->
+                GhacTheme(choice) {
+                    GhacApp(container)
+                }
             }
         }
     }
