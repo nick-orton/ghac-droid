@@ -123,9 +123,14 @@ fun SettingsScreen(
         }
 
         if (form.saved) {
+            val status = saveStatus(mpdConnection, snapConnection)
             Text(
-                text = "Saved. Connecting…",
-                color = MaterialTheme.colorScheme.primary,
+                text = status.message,
+                color = if (status == SaveStatus.Retrying) {
+                    MaterialTheme.colorScheme.error
+                } else {
+                    MaterialTheme.colorScheme.primary
+                },
                 style = MaterialTheme.typography.bodyMedium,
             )
         }
@@ -252,6 +257,26 @@ private fun LocalNetworkWarning() {
             }
         }
     }
+}
+
+internal enum class SaveStatus(val message: String) {
+    Connecting("Saved. Connecting…"),
+    Connected("Saved. Connected."),
+    Retrying("Saved, but a server is unreachable. Retrying…"),
+}
+
+/**
+ * The confirmation under the Save button, derived from the live connection
+ * states rather than fixed at save time — otherwise it would keep saying
+ * "Connecting…" long after both servers had answered.
+ *
+ * Any failure outranks success, so one unreachable server is not hidden
+ * behind the other connecting fine.
+ */
+internal fun saveStatus(mpd: ConnectionState, snap: ConnectionState): SaveStatus = when {
+    mpd is ConnectionState.Reconnecting || snap is ConnectionState.Reconnecting -> SaveStatus.Retrying
+    mpd.isConnected && snap.isConnected -> SaveStatus.Connected
+    else -> SaveStatus.Connecting
 }
 
 @Composable
